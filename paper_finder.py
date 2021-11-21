@@ -13,7 +13,7 @@ def get_arxiv_links(tag: bs4.element.Tag):
     fields = [t.attrs["data-tooltip"] for t in tag.find_all(class_="tag")]
     abs_link = tag.find(href=re.compile("abs")).attrs["href"]
     pdf_link = tag.find(href=re.compile("pdf")).attrs["href"]
-    return title, abs_link, pdf_link, fields
+    return title, abs_link, pdf_link, fields, authors
 
 
 proxy = {"http": "127.0.0.1:7890"}
