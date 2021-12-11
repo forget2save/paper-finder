@@ -35,7 +35,7 @@ arxiv_pdf_url = lambda arxiv_id: "/".join([arxiv_url, "pdf", arxiv_id])
 
 param = {
     "query": "adversarial+attack+physical",
-    "fields": "title,abstract,externalIds,citationCount,authors",
+    "fields": "title,venue,year,fieldsOfStudy,abstract,externalIds,citationCount,authors",
     "limit": "100",
     "offset": "0",
 }
@@ -72,53 +72,51 @@ try:
             external_ids = paper["externalIds"]
             arxiv_id = external_ids["ArXiv"] if "ArXiv" in external_ids else None
             
-            if paper_id in downloaded:
-                continue
+            # if paper_id in downloaded:
+            #     continue
             
-            tmp = []
-            for author in authors:
-                if author["authorId"] is None:
-                    tmp.append(f"{author['name']}")
-                elif author["authorId"] in authorcites:
-                    print("find an author")
-                    pch = authorcites[author["authorId"]]
-                    tmp.append(f"{author['name']}({pch})")
-                else:
-                    print("fetch from web")
-                    time.sleep(0.5)
-                    url = author_detail_url(author["authorId"])
-                    r2 = requests.get(url, proxies=proxy, params=param2)
-                    js2 = r2.json()
-                    if len(js2.keys()) < 3:
-                        tmp.append(f"{author['name']}")
-                    else:
-                        pc = js2["paperCount"]
-                        cc = js2["citationCount"]
-                        hi = js2["hIndex"]
-                        pch = f"{pc}-{cc}-{hi}"
-                        authorcites[author["authorId"]] = pch
-                        tmp.append(f"{author['name']}({pch})")
-            authors = ";".join(tmp)
+            # tmp = []
+            # for author in authors:
+            #     if author["authorId"] is None:
+            #         tmp.append(f"{author['name']}")
+            #     elif author["authorId"] in authorcites:
+            #         print("find an author")
+            #         pch = authorcites[author["authorId"]]
+            #         tmp.append(f"{author['name']}({pch})")
+            #     else:
+            #         print("fetch from web")
+            #         time.sleep(0.5)
+            #         url = author_detail_url(author["authorId"])
+            #         r2 = requests.get(url, proxies=proxy, params=param2)
+            #         js2 = r2.json()
+            #         if len(js2.keys()) < 3:
+            #             tmp.append(f"{author['name']}")
+            #         else:
+            #             pc = js2["paperCount"]
+            #             cc = js2["citationCount"]
+            #             hi = js2["hIndex"]
+            #             pch = f"{pc}-{cc}-{hi}"
+            #             authorcites[author["authorId"]] = pch
+            #             tmp.append(f"{author['name']}({pch})")
+            # authors = ";".join(tmp)
 
-            with open("./papers/summary.md", "a", encoding="utf-8") as f:
-                f.write("## " + title + f"[{citation}]\n\n")
-                f.write(authors + "\n\n")
-                if abstract is not None:
-                    f.write("### Abstract\n\n" + abstract + "\n\n")
+            # with open("./papers/summary.md", "a", encoding="utf-8") as f:
+            #     f.write("## " + title + f"[{citation}]\n\n")
+            #     f.write(authors + "\n\n")
+            #     if abstract is not None:
+            #         f.write("### Abstract\n\n" + abstract + "\n\n")
             
-            if arxiv_id is None:
-                downloaded.add(paper["paperId"])
-                continue
-
-            if citation >= 10 or "2" == arxiv_id[:2]:
-                t = paper["title"].replace("?", ":").split(":")[0]
+            if arxiv_id and (citation >= 10 or "2" == arxiv_id[0]):
+                t = title.replace("?", ":").split(":")[0]
+                print(t)
                 fp = f"./papers/{t}.pdf"
                 if not os.path.exists(fp):
                     print(arxiv_id, citation, title)
                     r_d = requests.get(arxiv_pdf_url(arxiv_id), stream=True)
                     with open(fp, "wb") as f:
                         f.write(r_d.content)
-            downloaded.add(paper["paperId"])
+            # downloaded.add(paper["paperId"])
+            
 except Exception as e:
     print(e)
     print(js2)
