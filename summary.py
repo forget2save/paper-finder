@@ -2,6 +2,7 @@ import os
 from download import download_arxiv
 from search import search_author
 from typing import IO, Dict, Any, List
+from storage import pickle_dump
 
 
 class Paper:
@@ -44,10 +45,10 @@ class Paper:
 def unique_paper(papers: List[Paper]):
     result = []
     id_set = set()
-    for p in papers:
-        if p.paper_id not in id_set:
-            id_set.add(p.paper_id)
-            result.append(p)
+    for paper in papers:
+        if paper.paper_id not in id_set:
+            id_set.add(paper.paper_id)
+            result.append(paper)
     return result
 
 
@@ -86,3 +87,11 @@ def write_summary(save_path: str, papers: List[Paper], download_pdf=False):
         write_info(save_path, paper)
         if download_pdf and paper.arxiv:
             download_arxiv(paper.arxiv, save_path)
+
+
+def write_unique_ids(save_path: str, papers: List[Paper]):
+    filename = os.path.join(save_path, "UNIQUE")
+    id_set = set()
+    for paper in papers:
+        id_set.add(paper.paper_id)
+    pickle_dump(id_set, filename)

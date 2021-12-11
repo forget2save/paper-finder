@@ -1,7 +1,7 @@
 import traceback
 from storage import renew_papers, dump_database
 from search import search_all_keywords
-from summary import Paper, new_summary, write_summary, unique_paper, sort_paper
+from summary import Paper, new_summary, write_summary, unique_paper, sort_paper, write_unique_ids
 from filter import filter_abstract_by_words, filter_title_by_words, filter_years, filter_low_citation
 
 save_path = "./physical-adversarial-attacks"
@@ -15,6 +15,8 @@ keywords = [
 ban_words = [
     "cyber",
     "cps",
+    "reinforcement",
+    "GAN",
 ]
 
 try:
@@ -33,6 +35,7 @@ try:
     print("After filtering ban words", len(papers))
     papers = sort_paper(papers)
     write_summary(save_path, papers, download_pdf=True)
+    write_unique_ids(save_path, papers)
 except Exception as e:
     print(e)
     print(traceback.format_exc())
