@@ -1,18 +1,8 @@
 # paper finder
 
-## goal
+An automatic search engine that can download PDF files and generate the summary.
 
-Find papers on the arxiv whose authors have great influence.
-
-## step
-
-- Resolve the html on the arxiv.
-- Get the critical information, e.g., title, fields, authors, abstract, pdf file.
-- Filter the papers according to the fields.
-- Get the citation of the paper and authors.
-- Filter the papers according to the citation information.
-
-## 需求
+## requirements
 
 - high citation
 - high citation authors
@@ -20,4 +10,4 @@ Find papers on the arxiv whose authors have great influence.
 - top journal or conference
 - exact words
 - unique id
-- pdf download and rename
+- pdf download
