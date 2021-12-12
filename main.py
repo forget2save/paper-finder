@@ -1,8 +1,8 @@
 import traceback
 from storage import renew_papers, dump_database
 from search import search_all_keywords
-from summary import Paper, new_summary, write_summary, unique_paper, sort_paper, write_unique_ids
-from filter import filter_abstract_by_words, filter_title_by_words, filter_years, filter_low_citation
+from summary import Paper, new_summary, write_summary, sort_paper, write_unique_ids
+from filter import unique_paper, filter_abstract_by_words, filter_title_by_words, filter_years, filter_low_citation
 
 save_path = "./physical-adversarial-attacks"
 keywords = [
@@ -16,7 +16,7 @@ ban_words = [
     "cyber",
     "cps",
     "reinforcement",
-    "GAN",
+    "(gan)",
 ]
 
 try:
@@ -27,8 +27,11 @@ try:
     print("Find", len(papers))
     papers = filter_years(papers, 2016, 2021)
     print("In year range", len(papers))
-    papers = filter_low_citation(papers, 10, 2019)
-    papers = filter_low_citation(papers, 20, 2018)
+    papers = filter_low_citation(papers, 10, 2020)
+    papers = filter_low_citation(papers, 20, 2019)
+    papers = filter_low_citation(papers, 30, 2018)
+    papers = filter_low_citation(papers, 40, 2017)
+    papers = filter_low_citation(papers, 50, 2016)
     print("After filtering low citation", len(papers))
     papers = filter_title_by_words(papers, ban_words)
     papers = filter_abstract_by_words(papers, ban_words)

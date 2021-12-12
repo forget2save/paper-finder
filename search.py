@@ -1,8 +1,28 @@
 import requests
-from time import sleep
+import time
 from storage import author_database
 from typing import Dict, List, Any
 
+
+class APILimit:
+    def __init__(self, speed) -> None:
+        self.start = time.time()
+        self.speed = speed
+        self.cnt = 0
+    
+    def __call__(self, *args: Any, **kwds: Any) -> Any:
+        now = time.time()
+        if now - self.start > self.speed * self.cnt:
+            self.cnt += 1
+            if now - self.start > 300:
+                self.start = now
+                self.cnt = 0
+        else:
+            time.sleep(1)
+            self.__call__()
+
+
+api_limit = APILimit(3)
 api_url = "https://api.semanticscholar.org/graph/v1"
 paper_search_url = "/".join([api_url, "paper", "search"])
 paper_detail_url = lambda paper_id: "/".join([api_url, "paper", paper_id])
@@ -33,6 +53,7 @@ def search(keyword, p=None):
     if not p:
         p = main_param.copy()
     p["query"] = keyword
+    api_limit()
     r = requests.get(paper_search_url, params=p)
     js = r.json()
     offset = js["next"]
@@ -67,8 +88,8 @@ def search_author(author_id):
     if author_id in author_database:
         return author_database[author_id]
     url = author_detail_url(author_id)
+    api_limit()
     r = requests.get(url, params=author_param)
-    sleep(3)
     js = r.json()
     if len(js.keys()) < 3:
         return None

@@ -42,16 +42,6 @@ class Paper:
             f.write(self.abstract + "\n\n")
 
 
-def unique_paper(papers: List[Paper]):
-    result = []
-    id_set = set()
-    for paper in papers:
-        if paper.paper_id not in id_set:
-            id_set.add(paper.paper_id)
-            result.append(paper)
-    return result
-
-
 def sort_paper(papers: List[Paper]):
     papers = [(p.year, p.citation, p.title, p) for p in papers]
     papers.sort(reverse=True)
