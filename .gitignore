@@ -3,3 +3,5 @@ papers
 test
 *.pdf
 *.md
+main.py
+*.ipynb

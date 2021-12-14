@@ -1,3 +1,4 @@
+import os
 import requests
 import time
 from storage import author_database
@@ -9,7 +10,7 @@ class APILimit:
         self.start = time.time()
         self.speed = speed
         self.cnt = 0
-    
+
     def __call__(self, *args: Any, **kwds: Any) -> Any:
         now = time.time()
         if now - self.start > self.speed * self.cnt:
@@ -35,6 +36,8 @@ paper_refer_url = lambda paper_id: "/".join(
 author_detail_url = lambda author_id: "/".join([api_url, "author", author_id])
 author_paper_url = lambda author_id: "/".join(
     [api_url, "author", author_id, "papers"])
+arxiv_url = "https://arxiv.org"
+arxiv_pdf_url = lambda arxiv_id: "/".join([arxiv_url, "pdf", arxiv_id])
 
 main_param = {
     "query": "",
@@ -56,7 +59,7 @@ def search(keyword, p=None):
     api_limit()
     r = requests.get(paper_search_url, params=p)
     js = r.json()
-    offset = js["next"]
+    offset = js["next"] if "next" in js else js["total"]
     p["offset"] = offset
     papers = js["data"]
     return papers, p
@@ -99,6 +102,19 @@ def search_author(author_id):
     pch = f"{pc}-{cc}-{hi}"
     author_database[author_id] = pch
     return pch
+
+
+def download_arxiv(arxiv_id, save_path, rename=None):
+    filename = rename + ".pdf" if rename else arxiv_id + ".pdf"
+    filename = os.path.join(save_path, filename)
+    if not os.path.exists(filename):
+        print("Downloading from arxiv.")
+        api_limit()
+        r_d = requests.get(arxiv_pdf_url(arxiv_id), stream=True)
+        with open(filename, "wb") as f:
+            f.write(r_d.content)
+    else:
+        print("File has existed!")
 
 
 if __name__ == "__main__":

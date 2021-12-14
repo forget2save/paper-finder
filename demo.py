@@ -4,24 +4,13 @@ from search import search_all_keywords
 from summary import Paper, new_summary, write_summary, sort_paper, write_unique_ids
 from filter import unique_paper, filter_abstract_by_words, filter_title_by_words, filter_years, filter_low_citation
 
-save_path = r"C:\Users\Administrator\Desktop\physical-adversarial-attacks"
-keywords = [
-    "physical+adversarial+attack",
-    "real+world+adversarial+attack",
-    "robust+adversarial+attack",
-    "universal+adversarial+attack",
-    "practical+adversarial+attack",
-]
-ban_words = [
-    "cyber",
-    "cps",
-    "reinforcement",
-    "(gan)",
-]
+save_path = "./new-survey"
+keywords = ["adversarial+attack"]
+ban_words = ["(cps)", "(gan)"]
 
 try:
     new_summary(save_path)
-    papers = search_all_keywords(keywords, lim=200)
+    papers = search_all_keywords(keywords, lim=100)
     renew_papers(papers)
     papers = unique_paper([Paper(p) for p in papers])
     print("Find", len(papers))

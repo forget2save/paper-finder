@@ -1,6 +1,5 @@
 import os
-from download import download_arxiv
-from search import search_author
+from search import search_author, download_arxiv
 from typing import IO, Dict, Any, List
 from storage import pickle_dump
 
