@@ -81,3 +81,13 @@ def filter_abstract_by_words(papers: List[Paper], ban_words: List[str]):
         if not flag:
             result.append(paper)
     return result
+
+
+def filter_citation_per_year(papers: List[Paper], speed:int):
+    from datetime import datetime
+    result = []
+    for paper in papers:
+        lb = int(max(0.5, int(datetime.now().year) - paper.year) * speed)
+        if paper.citation >= lb:
+            result.append(paper)
+    return result

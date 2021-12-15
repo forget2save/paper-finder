@@ -9,17 +9,13 @@ class APILimit:
     def __init__(self, speed) -> None:
         self.start = time.time()
         self.speed = speed
-        self.cnt = 0
 
     def __call__(self, *args: Any, **kwds: Any) -> Any:
         now = time.time()
-        if now - self.start > self.speed * self.cnt:
-            self.cnt += 1
-            if now - self.start > 300:
-                self.start = now
-                self.cnt = 0
+        if now - self.start >= self.speed:
+            self.start = now
         else:
-            time.sleep(1)
+            time.sleep(min(self.speed - now + self.start, 0.1))
             self.__call__()
 
 
