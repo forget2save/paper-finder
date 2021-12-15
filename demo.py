@@ -5,8 +5,8 @@ from summary import Paper, new_summary, write_summary, sort_paper, write_unique_
 from filter import unique_paper, filter_abstract_by_words, filter_title_by_words, filter_years, filter_low_citation
 
 save_path = "./new-survey"
-keywords = ["adversarial+attack"]
-ban_words = ["(cps)", "(gan)"]
+keywords = ["physical+adversarial+attack"]
+ban_words = ["cps", "gan"]
 
 try:
     new_summary(save_path)

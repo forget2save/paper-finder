@@ -1,7 +1,7 @@
 import os
 import requests
 import time
-from storage import author_database
+from storage import AUTHORS, DATABASE
 from typing import Dict, List, Any
 
 
@@ -84,8 +84,8 @@ def search_all_keywords(keywords, lim=100):
 
 
 def search_author(author_id):
-    if author_id in author_database:
-        return author_database[author_id]
+    if author_id in AUTHORS:
+        return AUTHORS[author_id]
     url = author_detail_url(author_id)
     api_limit()
     r = requests.get(url, params=author_param)
@@ -96,21 +96,20 @@ def search_author(author_id):
     cc = js["citationCount"]
     hi = js["hIndex"]
     pch = f"{pc}-{cc}-{hi}"
-    author_database[author_id] = pch
+    AUTHORS[author_id] = pch
     return pch
 
 
-def download_arxiv(arxiv_id, save_path, rename=None):
-    filename = rename + ".pdf" if rename else arxiv_id + ".pdf"
-    filename = os.path.join(save_path, filename)
+def download_arxiv(arxiv_id, save_path):
+    filename = arxiv_id + ".pdf"
+    filename = os.path.join(DATABASE, filename)
     if not os.path.exists(filename):
         print("Downloading from arxiv.")
         api_limit()
         r_d = requests.get(arxiv_pdf_url(arxiv_id), stream=True)
         with open(filename, "wb") as f:
             f.write(r_d.content)
-    else:
-        print("File has existed!")
+    os.link(filename, os.path.join(save_path, "pdf", arxiv_id + ".pdf"))
 
 
 if __name__ == "__main__":

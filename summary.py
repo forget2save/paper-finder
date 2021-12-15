@@ -36,7 +36,7 @@ class Paper:
         if self.venue:
             f.write(self.venue + "\n\n")
         if self.arxiv:
-            f.write(f"[pdf available](./{self.arxiv}.pdf)\n\n")
+            f.write(f"[pdf available](./pdf/{self.arxiv}.pdf)\n\n")
         if self.abstract:
             f.write(self.abstract + "\n\n")
 
@@ -50,8 +50,9 @@ def sort_paper(papers: List[Paper]):
 
 def new_summary(save_path: str):
     filename = os.path.join(save_path, "summary.md")
-    if not os.path.exists(save_path):
-        os.makedirs(save_path)
+    folder = os.path.join(save_path, "pdf")
+    if not os.path.exists(folder):
+        os.makedirs(folder)
     with open(filename, "w", encoding="utf-8") as f:
         pass
 
