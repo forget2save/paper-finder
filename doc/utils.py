@@ -1,20 +1,25 @@
 import re
 from typing import Tuple
 
+# class MDpaper:
+#     def __init__(self, raw) -> None:
+#         self.raw = raw
+
 
 def is_title(line: str):
     return line[0] == "-"
 
 
-def has_link(line: str)->Tuple[bool, str]:
+def has_link(line: str) -> Tuple[bool, str, str]:
     k1 = line.find("[")
     k2 = line.find("]", k1)
     k3 = line.find("(", k2)
     k4 = line.find(")", k3)
     if k1 == -1 or k2 == -1 or k3 == -1 or k4 == -1:
-        return False, line[2:].strip()
+        return False, line[2:].strip(), ""
     else:
-        return True, line[k1+1:k2]
+        return True, line[k1 + 1:k2], line[k3 + 1:k4]
+
 
 def make_link(title):
     title = filter_invalid_char(title)
@@ -36,7 +41,7 @@ def sort_md(file_path: str):
             else:
                 if len(buf) > 5:
                     lines.append(buf)
-                flag, title = has_link(line)
+                flag, title, _ = has_link(line)
                 if not flag:
                     buf = make_link(title)
                 else:
